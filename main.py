@@ -2,6 +2,9 @@ import os
 import csv
 import sys
 import fileinput
+import pandas as pd
+import matplotlib.pyplot as plt
+import numpy as np
 
 class Books:
 	"""
@@ -141,11 +144,12 @@ def insert_book():
 
 def write_book_to_collection(l):
 	# Open a file
-	path = "/Users/franco/PythonProjects/PythonExer/lib.csv"
+	path = "lib.csv"
 	with open(path,'a') as file:
 		for i in l:
 			file.write("%s," % i)
 		file.write("\n")
+			#file.write("{} {} {} {}\n".format(i[0], i[1], i[2], i[3]))
 	# Close opend file
 	file.close()
 
@@ -157,6 +161,7 @@ def search_book(myBookslist):
 			print ("")
 			print ("* * * The book {} by {} was found in shelf {} *  * *".format(name_of_book,
 			 i.getAuthor(), i.getPositionInShelf()))
+			print("")
 			print ("You rated this book {} out of 5".format(i.getRating()))
 			if (i.getReadStatus() == 'True'):
 				print ("and you have already read it.")
@@ -167,6 +172,7 @@ def search_book(myBookslist):
 				print ("The book has been lent. ")
 				print ("")
 			if (i.isLent() == "False"):
+				#print ("The book has not been lent. ")
 				print ("")
 			if (i.isLent() == "False" and i.isMissing() == "True"):
 				print ("It looks like the book has not been lent but is not in your bookshelf")
@@ -264,7 +270,7 @@ def found_b(myBookslist):
 			i.foundBook()
 
 def lentbooks(l):
-	with open('/Users/franco/PythonProjects/PythonExer/lib.csv', 'w') as fi:
+	with open('lib.csv', 'w') as fi:
 		for i in l:
 			if (i[1]==name_of_book_lent):
 				i[8] = "True"
@@ -274,7 +280,7 @@ def lentbooks(l):
 	fi.close()	
 
 def lostbooks(l):
-	with open('/Users/franco/PythonProjects/PythonExer/lib.csv', 'w') as fi:
+	with open('lib.csv', 'w') as fi:
 		for i in l:
 			if (i[1]==name_of_book_missing):
 				i[9] = "True"
@@ -284,7 +290,7 @@ def lostbooks(l):
 	fi.close()	
 
 def returningbooks(l):
-	with open('/Users/franco/PythonProjects/PythonExer/lib.csv', 'w') as fi:
+	with open('lib.csv', 'w') as fi:
 		for i in l:
 			if (i[1]==name_of_book_returning):
 				i[8] = "False"
@@ -294,7 +300,7 @@ def returningbooks(l):
 	fi.close()	
 
 def foundbooks(l):
-	with open('/Users/franco/PythonProjects/PythonExer/lib.csv', 'w') as fi:
+	with open('lib.csv', 'w') as fi:
 		for i in l:
 			if (i[1]==name_of_book_found):
 				i[9] = "False"
@@ -304,7 +310,7 @@ def foundbooks(l):
 	fi.close()
 
 def readbooks(l):
-	with open('/Users/franco/PythonProjects/PythonExer/lib.csv', 'w') as fi:
+	with open('lib.csv', 'w') as fi:
 		for i in l:
 			if (i[1]==name_of_book_read):
 				i[10] = "True"
@@ -314,17 +320,17 @@ def readbooks(l):
 	fi.close()
 
 def ratebooks(l, new_rating):
-	with open('/Users/franco/PythonProjects/PythonExer/lib.csv', 'w') as fi:
+	with open('lib.csv', 'w') as fi:
 		for i in l:
 			if (i[1]==name_of_book_rate):
-				i[11] = new_rating
+				i[11] = new_rate
 			print (i)
 			fi.write(",".join(i)) # Aggiungere exception in ogni write 
 			fi.write("\n")        #perche' ogni volta che c'e' un errore, ad esempio
 	fi.close()		#prova a sostituire new_rating con new_comment sopra, si cancella il database
 
 def commentbooks(l, new_comment):
-	with open('/Users/franco/PythonProjects/PythonExer/lib.csv', 'w') as fi:
+	with open('lib.csv', 'w') as fi:
 		for i in l:
 			if (i[1]==name_of_book_comment):
 				i[12] = new_comment
@@ -332,11 +338,244 @@ def commentbooks(l, new_comment):
 			fi.write(",".join(i))
 			fi.write("\n")
 	fi.close()
+#def sort_books(l):
+def panda():
+	colnames = ['Author', 'Title', 'Year of publ.', 'Published by', 'Bookshelf Position',
+			'Author Nationality', 'Book Language', 'Genre',
+			'Lent', 'Lost', 'Read', 'Rating', 'Comments',  'No']
+	df = pd.read_csv('lib.csv',names=colnames, header=None)
+	books_read = (df.Read == True).sum()
+	books_not_read = (df.Read == False).sum()
+	total_number_of_books = df.shape[0]
+	print ("Total number of books in your bookshelf: {}".format(total_number_of_books))
+	print ("Total number of books read: {}".format(books_read))
+	print ("Total number of unread books: {}".format(books_not_read))
+	read_percentage = int(books_read)/int(total_number_of_books)*100
+	not_read_percentage = int(books_not_read)/int(total_number_of_books)*100
+	print ("You have read {} % of your books and have have {} % to read".format(round(read_percentage),
+                                                                            round(not_read_percentage)))
+	number_of_ratings = total_number_of_books - df.Rating.isnull().sum()
+	print ("You have rated {} books".format(number_of_ratings))
+	mean_rating = df.Rating.mean()
+	print ("Mean rating is: {} ".format(round(mean_rating,2)))
+	max_rating = df.Rating.max()
+	print ("Max rating is: {} ".format(round(max_rating,2)))
+	min_rating = df.Rating.min()
+	print ("Min rating is: {}".format(round(min_rating,2)))
+	min_rated_books = df[df['Rating'] == int(min_rating)][['Title', 'Author', 'Rating']]
+	max_rated_books = df[df['Rating'] == int(max_rating)][['Title', 'Author','Rating']]
+	list_min_rated_books_title = list(min_rated_books['Title'].values)
+	list_min_rated_books_author = list(min_rated_books['Author'].values)
+	list_min_rated_books_rating = list(min_rated_books['Rating'].values)
+	list_max_rated_books_title = list(max_rated_books['Title'].values)
+	list_max_rated_books_author = list(max_rated_books['Author'].values)
+	list_max_rated_books_rating = list(max_rated_books['Rating'].values)
+
+	books_lent = (df.Lent == True).sum()
+	books_lost = (df.Lost == True).sum()
+	print ("Total number of books lent: {}".format(books_lent))
+	print ("Total number of books lost: {}".format(books_lost))
+	print("")
+
+
+	condition = True
+	exc = True
+	while condition:
+		if exc:
+			question_about_rating = input("Would you like to see a list of your best or worse rated books? [Y/n]: ")
+		if (question_about_rating == 'Y' or question_about_rating == 'y'):
+			answer = input("Press 1 for best, 2 for worse, 3 for both: ")
+			print ("")
+			if (answer == '1'):
+				print ("These are the books you have best rated:")
+				print("")
+				for i,l,m in sorted(zip(list_max_rated_books_title, list_max_rated_books_author, list_max_rated_books_rating)):
+					print("{} by {} rated {} out of 5".format(i,l,int(m)))
+				print("")
+				condition = False
+			elif (answer == '2'):
+				print ("These are the books you have worse rated:")
+				print("")
+				for i,l,m in sorted(zip(list_min_rated_books_title, list_min_rated_books_author, list_min_rated_books_rating)):
+					print("{} by {} rated {} out of 5".format(i,l,int(m)))
+				print("")
+				condition = False
+			elif (answer == '3'):
+				print("")
+				print ("These are the books you have best rated:")
+				print("")
+				for i,l,m in sorted(zip(list_max_rated_books_title, list_max_rated_books_author, list_max_rated_books_rating)):
+					print("{} by {} rated {} out of 5".format(i,l,int(m)))
+				print ("")
+				print("*****************************************")
+				print("")
+				print("*****************************************")
+				print("")
+				print("And these the books with worse ratings: ")
+				print("")
+				for i,l,m in sorted(zip(list_min_rated_books_title, list_min_rated_books_author, list_min_rated_books_rating)):
+					print("{} by {} rated {} out of 5".format(i,l,int(m)))
+				print("")
+				condition = False
+			else:
+				print("")
+				condition = False
+		elif (question_about_rating == "N" or question_about_rating == "n"):
+			print("")
+			condition = False
+		else:
+			question_about_rating = input("Invalid option. Please type Y or n: ")
+			exc = False
+			#question_about_rating = str(error_typing)
+	# genre
+	genre_list = df.groupby('Genre').size().sort_values(ascending=False)
+	
+	#Authors
+	authors_list = df.groupby('Author').size().sort_values(ascending=False)
+	
+	#Author nationalities
+	author_nationalities_list = df.groupby('Author Nationality').size().sort_values(ascending=False)
+
+	#Book languages
+	book_languages_list = df.groupby('Book Language').size().sort_values(ascending=False)
+
+	condition2 = True
+	exc2 = True
+	while condition2:
+		if exc2:
+			question_about_auth_genre = input("Would you like to see how many books you have per authors, genres and languages? [Y/n]: ")
+		if (question_about_auth_genre == 'Y' or question_about_auth_genre == 'y'):
+			answer_a_g_l = input("Press 1 for authors, 2 for genres, 3 for author nationalities, 4 for book languages, 5 for all of them: ")
+			if (answer_a_g_l == '1'):
+				print ("This is how many books you have per author:")
+				print("")
+				pd.Series.__unicode__ = pd.Series.to_string
+				print(authors_list)
+				condition2 = False
+			elif (answer_a_g_l == '2'):
+				print ("This is how many books you have, ordered by genre:")
+				print("")
+				pd.Series.__unicode__ = pd.Series.to_string
+				print(genre_list)
+				condition2 = False
+			elif (answer_a_g_l == '3'):
+				print ("This is how many books you have, ordered by author nationalities:")
+				print("")
+				pd.Series.__unicode__ = pd.Series.to_string
+				print(author_nationalities_list)
+				condition2 = False
+			elif (answer_a_g_l == '4'):
+				print ("This is how many books you have per book languages: ")
+				print("")
+				pd.Series.__unicode__ = pd.Series.to_string
+				print(book_languages_list)
+				condition2 = False
+			elif (answer_a_g_l == '5'):
+				print ("This is how many books you have per author:")
+				print("")
+				pd.Series.__unicode__ = pd.Series.to_string
+				print(authors_list)
+				print("*********************************************")
+				print("")
+				print("*********************************************")
+				print ("This is how many books you have, ordered by genre:")
+				pd.Series.__unicode__ = pd.Series.to_string
+				print(genre_list)
+				print("*********************************************")
+				print("")
+				print("*********************************************")
+				print ("This is how many books you have, ordered by author nationalities:")
+				pd.Series.__unicode__ = pd.Series.to_string
+				print(author_nationalities_list)
+				print("*********************************************")
+				print("")
+				print("*********************************************")
+				print ("This is how many books you have per book languages: ")
+				pd.Series.__unicode__ = pd.Series.to_string
+				print(book_languages_list)
+				condition2 = False
+			else:
+				print("")
+				condition2 = False
+		elif (question_about_auth_genre == "N" or question_about_auth_genre == "n"):
+			print("")
+			condition2 = False
+		else:
+			question_about_auth_genre =input("Invalid option. Please type Y or n: ")
+			exc2 = False
+
+	books_lent = df[df['Lent'] ==  True ][['Title', 'Author']]
+	books_lost = df[df['Lost'] ==  True ][['Title', 'Author']]
+	list_books_lent_title = list(books_lent['Title'].values)
+	list_books_lent_author = list(books_lent['Author'].values)
+	list_books_lost_title = list(books_lost['Title'].values)
+	list_books_lost_author = list(books_lost['Author'].values)
+
+
+
+	condition3 = True
+	exc3 = True
+	while condition3:
+		if exc3:
+			question_about_lent_lost = input("Would you like to see which books you have lent or lost? [Y/n]: ")
+		if (question_about_lent_lost == 'Y' or question_about_lent_lost == 'y'):
+			answer_lent_lost = input("Press 1 for lent books, 2 for lost books, 3 for both: ")
+			print("")
+			if (answer_lent_lost == '1'):
+				print ("These are the books that you have lent:")
+				#pd.Series.__unicode__ = pd.Series.to_string
+				#print(list_books_lent)
+				print("")
+				for i,l in sorted(zip(list_books_lent_title, list_books_lent_author)):
+					print("{} by {}".format(i,l))
+				print("")
+				condition3 = False
+			if (answer_lent_lost == '2'):
+				print ("These are the books that you have lost:")
+				#pd.Series.__unicode__ = pd.Series.to_string
+				#print(list_books_lost)
+				print("")
+				for i,l in sorted(zip(list_books_lost_title, list_books_lost_author)):
+					print("{} by {}".format(i,l))
+				print("")
+				condition3 = False
+			if (answer_lent_lost == '3'):
+				print ("These are the books that you have lent:")
+				#pd.Series.__unicode__ = pd.Series.to_string
+				#print(list_books_lent)
+				print("")
+				for i,l in sorted(zip(list_books_lent_title, list_books_lent_author)):
+					print("{} by {}".format(i,l))
+				print("")
+				print("*****************************************")
+				print("")
+				print("*****************************************")
+				print("")
+				print ("These are the books that you have lost:")
+				#pd.Series.__unicode__ = pd.Series.to_string
+				#print(list_books_lost)
+				print("")
+				for i,l in sorted(zip(list_books_lost_title, list_books_lost_author)):
+					print("{} by {}".format(i,l))
+				print("")
+				condition3 = False
+			else:
+				print("")
+				condition3 = False
+		elif (question_about_lent_lost == "N" or question_about_lent_lost == "n"):
+			print("")
+			condition3 = False
+		else:
+			question_about_lent_lost =input("Invalid option. Please type Y or n: ")
+			exc3 = False
+
+
+
 
 
 #Main function
 def main():
-	open('/Users/franco/PythonProjects/PythonExer/lib.csv', 'a').close()
+	open('lib.csv', 'a').close()
 	print ("Welcome to your bookshelf management program!")
 	print ("********************************************")
 	print ("")
@@ -345,9 +584,10 @@ def main():
 	other_options = True
 	myBooks = []
 	books_list = []
-	with open('/Users/franco/PythonProjects/PythonExer/lib.csv') as f:
+	with open('lib.csv') as f:
 			reader = csv.reader(f)
 			for row in reader:
+				#print (row)
 				myBooks.append(Books(row[0], row[1], row[2], row[3], row[4], row[5], row[6],
 					row[7], row[8], row[9], row[10], row[11], row[12]))
 				books_list.append(row)
@@ -362,11 +602,18 @@ def main():
 		option = input("> ")
 		counter = 1
 		if (option == "1"):
-			with open('/Users/franco/PythonProjects/PythonExer/lib.csv') as f:
+			print ("* * * * * * * * * * * * * * * * *")
+			print ("Here is a list of all your books ")
+			print ("* * * * * * * * * * * * * * * * *")
+			print("")
+			with open('lib.csv') as f:
 				reader = csv.reader(f)
+				#lines reader.readlines()
 				for row in sorted(reader):
+#					row.sort()
 					print (str(counter) +") " + row[0] + ", " + row[1])
 					counter += 1
+			print("")
 			another_op1 =input("Would you like to do something else? [Y/n]: ")
 			if (another_op1 == 'Y' or another_op1 == 'y'):
 				print ("")
@@ -473,7 +720,11 @@ def main():
 				other_options = False
 
 		elif (option == '11'):
-			print ('Show stats and plots')
+			print ("* * * * * * * * * * *")
+			print ('Show Stats and Plots')
+			print ("* * * * * * * * * * *")
+			panda()
+			
 			another_op11 =input("Would you like to do something else? [Y/n]: ")
 			if (another_op11 == 'Y' or another_op11  == 'y'):
 				print ("")
@@ -488,11 +739,15 @@ def main():
 	
 
 	
-	for i in range(len(myBooks)):
-		print(myBooks[i])
+	#for i in range(len(myBooks)):
+	#	print(myBooks[i])
 		
 
 if __name__ == "__main__":
 	main()
+
+	"""
+	Aggiungi funzione search by author che ti da tutti i libri di quell'autore
+	"""
 
 
