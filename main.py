@@ -146,7 +146,6 @@ def write_book_to_collection(l):
 		for i in l:
 			file.write("%s," % i)
 		file.write("\n")
-			#file.write("{} {} {} {}\n".format(i[0], i[1], i[2], i[3]))
 	# Close opend file
 	file.close()
 
@@ -168,7 +167,6 @@ def search_book(myBookslist):
 				print ("The book has been lent. ")
 				print ("")
 			if (i.isLent() == "False"):
-				#print ("The book has not been lent. ")
 				print ("")
 			if (i.isLent() == "False" and i.isMissing() == "True"):
 				print ("It looks like the book has not been lent but is not in your bookshelf")
@@ -334,7 +332,7 @@ def commentbooks(l, new_comment):
 			fi.write(",".join(i))
 			fi.write("\n")
 	fi.close()
-#def sort_books(l):
+
 
 #Main function
 def main():
@@ -350,7 +348,6 @@ def main():
 	with open('/Users/franco/PythonProjects/PythonExer/lib.csv') as f:
 			reader = csv.reader(f)
 			for row in reader:
-				#print (row)
 				myBooks.append(Books(row[0], row[1], row[2], row[3], row[4], row[5], row[6],
 					row[7], row[8], row[9], row[10], row[11], row[12]))
 				books_list.append(row)
@@ -367,9 +364,7 @@ def main():
 		if (option == "1"):
 			with open('/Users/franco/PythonProjects/PythonExer/lib.csv') as f:
 				reader = csv.reader(f)
-				#lines reader.readlines()
 				for row in sorted(reader):
-#					row.sort()
 					print (str(counter) +") " + row[0] + ", " + row[1])
 					counter += 1
 			another_op1 =input("Would you like to do something else? [Y/n]: ")
