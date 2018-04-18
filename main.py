@@ -209,67 +209,42 @@ def input_comment_book_title():
 
 
 
-def lent(myBookslist):
-	global name_of_book_lent 
-	name_of_book_lent = input_lent_book_title()
+def lent(myBookslist, name_of_book_lent):
 	for i in myBookslist:
-
 		if name_of_book_lent in i.getTitle():
 			i.lendingBook()
 
-def missing_b(myBookslist):
-	global name_of_book_missing
-	name_of_book_missing = input_missing_book_title()
+def missing_b(myBookslist, name_of_book_missing):
 	for i in myBookslist:
-
 		if name_of_book_missing in i.getTitle():
 			i.lostBook()
 
-def returning_b(myBookslist):
-	global name_of_book_returning
-	name_of_book_returning = input_returning_book_title()
+def returning_b(myBookslist, name_of_book_returning):
 	for i in myBookslist:
-
 		if name_of_book_returning in i.getTitle():
 			i.returningBook()
 
-def read_b(myBookslist):
-	global name_of_book_read
-	name_of_book_read = input_read_book_title()
+def read_b(myBookslist, name_of_book_read):
 	for i in myBookslist:
-
 		if name_of_book_read in i.getTitle():
 			i.readBook()
 
-def rate_b(myBookslist):
-	global name_of_book_rate
-	name_of_book_rate = input_rate_book_title()
-	global new_rate
-	new_rate = input("How would you rate this book from 1 to 5?")
+def rate_b(myBookslist, name_of_book_rate, new_rate):
 	for i in myBookslist:
-
 		if name_of_book_rate in i.getTitle():
 			i.setRating(new_rate) 
 
-def comment_b(myBookslist):
-	global name_of_book_comment
-	name_of_book_comment = input_comment_book_title()
-	global new_comment
-	new_comment = input("Add your comment or not here: ")
+def comment_b(myBookslist, name_of_book_comment, new_comment):
 	for i in myBookslist:
-
 		if name_of_book_comment in i.getTitle():
 			i.setComment(new_comment) 
 
-def found_b(myBookslist):
-	global name_of_book_found
-	name_of_book_found = input_found_book_title()
+def found_b(myBookslist, name_of_book_found):
 	for i in myBookslist:
-
 		if name_of_book_found in i.getTitle():
 			i.foundBook()
 
-def lentbooks(l,path):
+def lentbooks(l,path, name_of_book_lent):
 	with open(path, 'w') as fi:
 		for i in l:
 			if (i[1]==name_of_book_lent):
@@ -279,7 +254,7 @@ def lentbooks(l,path):
 			fi.write("\n")
 	fi.close()	
 
-def lostbooks(l,path):
+def lostbooks(l, path, name_of_book_missing):
 	with open(path, 'w') as fi:
 		for i in l:
 			if (i[1]==name_of_book_missing):
@@ -289,7 +264,7 @@ def lostbooks(l,path):
 			fi.write("\n")
 	fi.close()	
 
-def returningbooks(l, path):
+def returningbooks(l, path, name_of_book_returning):
 	with open(path, 'w') as fi:
 		for i in l:
 			if (i[1]==name_of_book_returning):
@@ -299,7 +274,7 @@ def returningbooks(l, path):
 			fi.write("\n")
 	fi.close()	
 
-def foundbooks(l, path):
+def foundbooks(l, path, name_of_book_found):
 	with open(path, 'w') as fi:
 		for i in l:
 			if (i[1]==name_of_book_found):
@@ -309,7 +284,7 @@ def foundbooks(l, path):
 			fi.write("\n")
 	fi.close()
 
-def readbooks(l, path):
+def readbooks(l, path, name_of_book_read):
 	with open(path, 'w') as fi:
 		for i in l:
 			if (i[1]==name_of_book_read):
@@ -319,7 +294,7 @@ def readbooks(l, path):
 			fi.write("\n")
 	fi.close()
 
-def ratebooks(l, new_rating, path):
+def ratebooks(l, new_rate, path, name_of_book_rate):
 	with open(path, 'w') as fi:
 		for i in l:
 			if (i[1]==name_of_book_rate):
@@ -329,7 +304,7 @@ def ratebooks(l, new_rating, path):
 			fi.write("\n")        #perche' ogni volta che c'e' un errore, ad esempio
 	fi.close()		#prova a sostituire new_rating con new_comment sopra, si cancella il database
 
-def commentbooks(l, new_comment, path):
+def commentbooks(l, new_comment, path, name_of_book_comment):
 	with open(path, 'w') as fi:
 		for i in l:
 			if (i[1]==name_of_book_comment):
@@ -647,8 +622,9 @@ def main():
 				option == 'q'
 				other_options = False
 		elif (option == "4"):
-			lent(myBooks)
-			lentbooks(books_list, database)
+			name_of_book_lent = input_lent_book_title()
+			lent(myBooks, name_of_book_lent)
+			lentbooks(books_list, database, name_of_book_lent)
 			another_op4 =input("Would you like to do something else? [Y/n]: ")
 			if (another_op4 == 'Y' or another_op4 == 'y'):
 				print ("")
@@ -657,8 +633,9 @@ def main():
 				option == 'q'
 				other_options = False
 		elif (option == "5"):
-			missing_b(myBooks)
-			lostbooks(books_list, database)
+			name_of_book_missing = input_missing_book_title()
+			missing_b(myBooks, name_of_book_missing)
+			lostbooks(books_list, database, name_of_book_missing)
 			another_op5 =input("Would you like to do something else? [Y/n]: ")
 			if (another_op5 == 'Y' or another_op5 == 'y'):
 				print ("")
@@ -667,8 +644,9 @@ def main():
 				option == 'q'
 				other_options = False
 		elif (option == "6"):
-			returning_b(myBooks)
-			returningbooks(books_list, database)
+			name_of_book_returning = input_returning_book_title()
+			returning_b(myBooks, name_of_book_returning)
+			returningbooks(books_list, database, name_of_book_returning)
 			another_op6 =input("Would you like to do something else? [Y/n]: ")
 			if (another_op6 == 'Y' or another_op6 == 'y'):
 				print ("")
@@ -677,8 +655,9 @@ def main():
 				option == 'q'
 				other_options = False
 		elif (option == "7"):
-			found_b(myBooks)
-			foundbooks(books_list, database)
+			name_of_book_found = input_found_book_title()
+			found_b(myBooks, name_of_book_found)
+			foundbooks(books_list, database, name_of_book_found)
 			another_op7 =input("Would you like to do something else? [Y/n]: ")
 			if (another_op7 == 'Y' or another_op7 == 'y'):
 				print ("")
@@ -688,8 +667,9 @@ def main():
 				other_options = False
 
 		elif (option == '8'):
-			read_b(myBooks)
-			readbooks(books_list, database)
+			name_of_book_read = input_read_book_title()
+			read_b(myBooks, name_of_book_read)
+			readbooks(books_list, database, name_of_book_read)
 			another_op8 =input("Would you like to do something else? [Y/n]: ")
 			if (another_op8 == 'Y' or another_op8 == 'y'):
 				print ("")
@@ -699,8 +679,10 @@ def main():
 				other_options = False
 
 		elif (option == '9'):
-			rate_b(myBooks)
-			ratebooks(books_list, new_rate, database)
+			name_of_book_rate = input_rate_book_title()
+			new_rate = input("How would you rate this book from 1 to 5?")
+			rate_b(myBooks, name_of_book_rate, new_rate)
+			ratebooks(books_list, new_rate, database, name_of_book_rate)
 			another_op9 =input("Would you like to do something else? [Y/n]: ")
 			if (another_op9 == 'Y' or another_op9 == 'y'):
 				print ("")
@@ -710,8 +692,10 @@ def main():
 				other_options = False
 
 		elif (option == '10'):
-			comment_b(myBooks)
-			commentbooks(books_list, new_comment, database)
+			name_of_book_comment = input_comment_book_title()
+			new_comment = input("Add your comment or not here: ")
+			comment_b(myBooks, name_of_book_comment, new_comment)
+			commentbooks(books_list, new_comment, database, name_of_book_comment)
 			another_op10 =input("Would you like to do something else? [Y/n]: ")
 			if (another_op10 == 'Y' or another_op10 == 'y'):
 				print ("")
