@@ -142,9 +142,9 @@ def insert_book():
 	
 	return new_book
 
-def write_book_to_collection(l):
+def write_book_to_collection(l, path):
 	# Open a file
-	path = "lib.csv"
+	#path = "lib.csv"
 	with open(path,'a') as file:
 		for i in l:
 			file.write("%s," % i)
@@ -269,8 +269,8 @@ def found_b(myBookslist):
 		if name_of_book_found in i.getTitle():
 			i.foundBook()
 
-def lentbooks(l):
-	with open('lib.csv', 'w') as fi:
+def lentbooks(l,path):
+	with open(path, 'w') as fi:
 		for i in l:
 			if (i[1]==name_of_book_lent):
 				i[8] = "True"
@@ -279,8 +279,8 @@ def lentbooks(l):
 			fi.write("\n")
 	fi.close()	
 
-def lostbooks(l):
-	with open('lib.csv', 'w') as fi:
+def lostbooks(l,path):
+	with open(path, 'w') as fi:
 		for i in l:
 			if (i[1]==name_of_book_missing):
 				i[9] = "True"
@@ -289,8 +289,8 @@ def lostbooks(l):
 			fi.write("\n")
 	fi.close()	
 
-def returningbooks(l):
-	with open('lib.csv', 'w') as fi:
+def returningbooks(l, path):
+	with open(path, 'w') as fi:
 		for i in l:
 			if (i[1]==name_of_book_returning):
 				i[8] = "False"
@@ -299,8 +299,8 @@ def returningbooks(l):
 			fi.write("\n")
 	fi.close()	
 
-def foundbooks(l):
-	with open('lib.csv', 'w') as fi:
+def foundbooks(l, path):
+	with open(path, 'w') as fi:
 		for i in l:
 			if (i[1]==name_of_book_found):
 				i[9] = "False"
@@ -309,8 +309,8 @@ def foundbooks(l):
 			fi.write("\n")
 	fi.close()
 
-def readbooks(l):
-	with open('lib.csv', 'w') as fi:
+def readbooks(l, path):
+	with open(path, 'w') as fi:
 		for i in l:
 			if (i[1]==name_of_book_read):
 				i[10] = "True"
@@ -319,8 +319,8 @@ def readbooks(l):
 			fi.write("\n")
 	fi.close()
 
-def ratebooks(l, new_rating):
-	with open('lib.csv', 'w') as fi:
+def ratebooks(l, new_rating, path):
+	with open(path, 'w') as fi:
 		for i in l:
 			if (i[1]==name_of_book_rate):
 				i[11] = new_rate
@@ -329,8 +329,8 @@ def ratebooks(l, new_rating):
 			fi.write("\n")        #perche' ogni volta che c'e' un errore, ad esempio
 	fi.close()		#prova a sostituire new_rating con new_comment sopra, si cancella il database
 
-def commentbooks(l, new_comment):
-	with open('lib.csv', 'w') as fi:
+def commentbooks(l, new_comment, path):
+	with open(path, 'w') as fi:
 		for i in l:
 			if (i[1]==name_of_book_comment):
 				i[12] = new_comment
@@ -339,11 +339,11 @@ def commentbooks(l, new_comment):
 			fi.write("\n")
 	fi.close()
 #def sort_books(l):
-def panda():
+def panda(path):
 	colnames = ['Author', 'Title', 'Year of publ.', 'Published by', 'Bookshelf Position',
 			'Author Nationality', 'Book Language', 'Genre',
 			'Lent', 'Lost', 'Read', 'Rating', 'Comments',  'No']
-	df = pd.read_csv('lib.csv',names=colnames, header=None)
+	df = pd.read_csv(path,names=colnames, header=None)
 	books_read = (df.Read == True).sum()
 	books_not_read = (df.Read == False).sum()
 	total_number_of_books = df.shape[0]
@@ -575,7 +575,8 @@ def panda():
 
 #Main function
 def main():
-	open('lib.csv', 'a').close()
+	database = 'lib.csv'
+	open(database, 'a').close()
 	print ("Welcome to your bookshelf management program!")
 	print ("********************************************")
 	print ("")
@@ -584,7 +585,7 @@ def main():
 	other_options = True
 	myBooks = []
 	books_list = []
-	with open('lib.csv') as f:
+	with open(database) as f:
 			reader = csv.reader(f)
 			for row in reader:
 				#print (row)
@@ -606,7 +607,7 @@ def main():
 			print ("Here is a list of all your books ")
 			print ("* * * * * * * * * * * * * * * * *")
 			print("")
-			with open('lib.csv') as f:
+			with open(databse) as f:
 				reader = csv.reader(f)
 				#lines reader.readlines()
 				for row in sorted(reader):
@@ -627,7 +628,7 @@ def main():
 		elif (option == "2"):
 		
 			book = insert_book()
-			write_book_to_collection(book)
+			write_book_to_collection(book, database)
 			another_op2 =input("Would you like to do something else? [Y/n]: ")
 			if (another_op2 == 'Y' or another_op2 == 'y'):
 				print ("")
@@ -647,7 +648,7 @@ def main():
 				other_options = False
 		elif (option == "4"):
 			lent(myBooks)
-			lentbooks(books_list)
+			lentbooks(books_list, database)
 			another_op4 =input("Would you like to do something else? [Y/n]: ")
 			if (another_op4 == 'Y' or another_op4 == 'y'):
 				print ("")
@@ -657,7 +658,7 @@ def main():
 				other_options = False
 		elif (option == "5"):
 			missing_b(myBooks)
-			lostbooks(books_list)
+			lostbooks(books_list, database)
 			another_op5 =input("Would you like to do something else? [Y/n]: ")
 			if (another_op5 == 'Y' or another_op5 == 'y'):
 				print ("")
@@ -667,7 +668,7 @@ def main():
 				other_options = False
 		elif (option == "6"):
 			returning_b(myBooks)
-			returningbooks(books_list)
+			returningbooks(books_list, database)
 			another_op6 =input("Would you like to do something else? [Y/n]: ")
 			if (another_op6 == 'Y' or another_op6 == 'y'):
 				print ("")
@@ -677,7 +678,7 @@ def main():
 				other_options = False
 		elif (option == "7"):
 			found_b(myBooks)
-			foundbooks(books_list)
+			foundbooks(books_list, database)
 			another_op7 =input("Would you like to do something else? [Y/n]: ")
 			if (another_op7 == 'Y' or another_op7 == 'y'):
 				print ("")
@@ -688,7 +689,7 @@ def main():
 
 		elif (option == '8'):
 			read_b(myBooks)
-			readbooks(books_list)
+			readbooks(books_list, database)
 			another_op8 =input("Would you like to do something else? [Y/n]: ")
 			if (another_op8 == 'Y' or another_op8 == 'y'):
 				print ("")
@@ -699,7 +700,7 @@ def main():
 
 		elif (option == '9'):
 			rate_b(myBooks)
-			ratebooks(books_list, new_rate)
+			ratebooks(books_list, new_rate, database)
 			another_op9 =input("Would you like to do something else? [Y/n]: ")
 			if (another_op9 == 'Y' or another_op9 == 'y'):
 				print ("")
@@ -710,7 +711,7 @@ def main():
 
 		elif (option == '10'):
 			comment_b(myBooks)
-			commentbooks(books_list, new_comment)
+			commentbooks(books_list, new_comment, database)
 			another_op10 =input("Would you like to do something else? [Y/n]: ")
 			if (another_op10 == 'Y' or another_op10 == 'y'):
 				print ("")
@@ -723,7 +724,7 @@ def main():
 			print ("* * * * * * * * * * *")
 			print ('Show Stats and Plots')
 			print ("* * * * * * * * * * *")
-			panda()
+			panda(database)
 			
 			another_op11 =input("Would you like to do something else? [Y/n]: ")
 			if (another_op11 == 'Y' or another_op11  == 'y'):
