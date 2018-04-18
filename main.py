@@ -143,14 +143,10 @@ def insert_book():
 	return new_book
 
 def write_book_to_collection(l, path):
-	# Open a file
-	#path = "lib.csv"
 	with open(path,'a') as file:
 		for i in l:
 			file.write("%s," % i)
 		file.write("\n")
-			#file.write("{} {} {} {}\n".format(i[0], i[1], i[2], i[3]))
-	# Close opend file
 	file.close()
 
 def search_book(myBookslist):
@@ -172,7 +168,6 @@ def search_book(myBookslist):
 				print ("The book has been lent. ")
 				print ("")
 			if (i.isLent() == "False"):
-				#print ("The book has not been lent. ")
 				print ("")
 			if (i.isLent() == "False" and i.isMissing() == "True"):
 				print ("It looks like the book has not been lent but is not in your bookshelf")
@@ -205,9 +200,6 @@ def input_rate_book_title():
 
 def input_comment_book_title():
 	return  input("Type the title of the book that you want to comment or add a note to: ")
-
-
-
 
 def lent(myBookslist, name_of_book_lent):
 	for i in myBookslist:
@@ -300,9 +292,9 @@ def ratebooks(l, new_rate, path, name_of_book_rate):
 			if (i[1]==name_of_book_rate):
 				i[11] = new_rate
 			print (i)
-			fi.write(",".join(i)) # Aggiungere exception in ogni write 
-			fi.write("\n")        #perche' ogni volta che c'e' un errore, ad esempio
-	fi.close()		#prova a sostituire new_rating con new_comment sopra, si cancella il database
+			fi.write(",".join(i))
+			fi.write("\n")       
+	fi.close()	
 
 def commentbooks(l, new_comment, path, name_of_book_comment):
 	with open(path, 'w') as fi:
@@ -313,7 +305,7 @@ def commentbooks(l, new_comment, path, name_of_book_comment):
 			fi.write(",".join(i))
 			fi.write("\n")
 	fi.close()
-#def sort_books(l):
+
 def panda(path):
 	colnames = ['Author', 'Title', 'Year of publ.', 'Published by', 'Bookshelf Position',
 			'Author Nationality', 'Book Language', 'Genre',
@@ -351,7 +343,6 @@ def panda(path):
 	print ("Total number of books lent: {}".format(books_lent))
 	print ("Total number of books lost: {}".format(books_lost))
 	print("")
-
 
 	condition = True
 	exc = True
@@ -401,16 +392,13 @@ def panda(path):
 		else:
 			question_about_rating = input("Invalid option. Please type Y or n: ")
 			exc = False
-			#question_about_rating = str(error_typing)
+
 	# genre
 	genre_list = df.groupby('Genre').size().sort_values(ascending=False)
-	
 	#Authors
 	authors_list = df.groupby('Author').size().sort_values(ascending=False)
-	
 	#Author nationalities
 	author_nationalities_list = df.groupby('Author Nationality').size().sort_values(ascending=False)
-
 	#Book languages
 	book_languages_list = df.groupby('Book Language').size().sort_values(ascending=False)
 
@@ -486,8 +474,6 @@ def panda(path):
 	list_books_lost_title = list(books_lost['Title'].values)
 	list_books_lost_author = list(books_lost['Author'].values)
 
-
-
 	condition3 = True
 	exc3 = True
 	while condition3:
@@ -498,8 +484,6 @@ def panda(path):
 			print("")
 			if (answer_lent_lost == '1'):
 				print ("These are the books that you have lent:")
-				#pd.Series.__unicode__ = pd.Series.to_string
-				#print(list_books_lent)
 				print("")
 				for i,l in sorted(zip(list_books_lent_title, list_books_lent_author)):
 					print("{} by {}".format(i,l))
@@ -507,8 +491,6 @@ def panda(path):
 				condition3 = False
 			if (answer_lent_lost == '2'):
 				print ("These are the books that you have lost:")
-				#pd.Series.__unicode__ = pd.Series.to_string
-				#print(list_books_lost)
 				print("")
 				for i,l in sorted(zip(list_books_lost_title, list_books_lost_author)):
 					print("{} by {}".format(i,l))
@@ -516,8 +498,6 @@ def panda(path):
 				condition3 = False
 			if (answer_lent_lost == '3'):
 				print ("These are the books that you have lent:")
-				#pd.Series.__unicode__ = pd.Series.to_string
-				#print(list_books_lent)
 				print("")
 				for i,l in sorted(zip(list_books_lent_title, list_books_lent_author)):
 					print("{} by {}".format(i,l))
@@ -527,8 +507,6 @@ def panda(path):
 				print("*****************************************")
 				print("")
 				print ("These are the books that you have lost:")
-				#pd.Series.__unicode__ = pd.Series.to_string
-				#print(list_books_lost)
 				print("")
 				for i,l in sorted(zip(list_books_lost_title, list_books_lost_author)):
 					print("{} by {}".format(i,l))
@@ -543,9 +521,6 @@ def panda(path):
 		else:
 			question_about_lent_lost =input("Invalid option. Please type Y or n: ")
 			exc3 = False
-
-
-
 
 
 #Main function
@@ -563,7 +538,6 @@ def main():
 	with open(database) as f:
 			reader = csv.reader(f)
 			for row in reader:
-				#print (row)
 				myBooks.append(Books(row[0], row[1], row[2], row[3], row[4], row[5], row[6],
 					row[7], row[8], row[9], row[10], row[11], row[12]))
 				books_list.append(row)
@@ -584,9 +558,7 @@ def main():
 			print("")
 			with open(databse) as f:
 				reader = csv.reader(f)
-				#lines reader.readlines()
 				for row in sorted(reader):
-#					row.sort()
 					print (str(counter) +") " + row[0] + ", " + row[1])
 					counter += 1
 			print("")
@@ -722,11 +694,8 @@ def main():
 		else:
 			print ("Please type again. ")
 	
-
-	
 	#for i in range(len(myBooks)):
 	#	print(myBooks[i])
-		
 
 if __name__ == "__main__":
 	main()
